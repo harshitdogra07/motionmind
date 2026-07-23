@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+python-multipart
+opencv-python
+mediapipe
+numpy
+pandas
+xgboost
+scikit-learn
+joblib
+google-generativeai
+SQLAlchemy

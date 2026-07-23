@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotionMind | AI Skill Coach</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar glass-panel">
+            <div class="logo">
+                <h2>Motion<span>Mind</span></h2>
+            </div>
+            
+            <div class="user-profile">
+                <div class="avatar"></div>
+                <div class="user-info">
+                    <h3>Alex</h3>
+                    <p class="tier gold-tier">Gold Tier</p>
+                </div>
+            </div>
+
+            <!-- Skill Selector -->
+            <div class="skill-selector">
+                <h3>Choose Your Skill</h3>
+                <div class="skill-tabs">
+                    <button class="skill-tab active" data-skill="squat">🏋️ Squat</button>
+                    <button class="skill-tab" data-skill="boxing">🥊 Boxing</button>
+                    <button class="skill-tab" data-skill="basketball">🏀 Basketball</button>
+                </div>
+            </div>
+
+            <div class="skill-tree">
+                <h3>Progression</h3>
+                <div class="skill-card active" id="current-skill-card">
+                    <div class="skill-icon" id="skill-icon-display">🏋️</div>
+                    <div class="skill-details">
+                        <h4 id="skill-name-display">Bodyweight Squat</h4>
+                        <div class="progress-bar"><div class="fill" id="xp-fill" style="width: 75%"></div></div>
+                        <p class="xp" id="xp-text">Level 4 (75%)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reference-section">
+                <h3>Pro Reference</h3>
+                <div class="video-wrapper" id="ref-video-wrapper" style="height: 280px;">
+                    <iframe id="ref-video" width="100%" height="100%" src="https://www.youtube.com/embed/eFEVKmp3M4g" title="Perfect Form Reference" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <div class="drills-container" id="drills-container">
+                    <h4>Recommended Drills</h4>
+                    <p class="drill-text" id="drill-text">Select a skill and complete a rep to get personalized drill recommendations!</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-nav glass-panel">
+                <div class="stat-box">
+                    <span class="label">Session Score</span>
+                    <span class="value" id="session-score">--</span>
+                </div>
+                <div class="stat-box">
+                    <span class="label">Reps Tracked</span>
+                    <span class="value" id="reps-count">0</span>
+                </div>
+                <div class="stat-box">
+                    <span class="label">Active Skill</span>
+                    <span class="value" id="active-skill-label" style="font-size: 18px;">🏋️ Squat</span>
+                </div>
+                <button class="btn-primary" id="start-btn">Start Practice</button>
+            </header>
+
+            <div class="camera-section glass-panel">
+                <div class="video-container">
+                    <video id="webcam" autoplay playsinline></video>
+                    <canvas id="overlay"></canvas>
+                    
+                    <div class="recording-indicator" id="rec-indicator">
+                        <div class="red-dot"></div> Analyzing Form...
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Right Panel (AI Coach) -->
+        <aside class="coach-panel glass-panel">
+            <div class="coach-header">
+                <div class="ai-avatar">🤖</div>
+                <h3>Coach Gemini</h3>
+            </div>
+            
+            <div class="coach-chat" id="coach-chat">
+                <div class="message ai-msg">
+                    <p>Welcome to MotionMind! I'm your AI coach. Pick a skill from the sidebar, then hit "Start Practice"!</p>
+                </div>
+            </div>
+
+            <div class="chat-input-area">
+                <input type="text" id="user-query" placeholder="Ask Coach Gemini..." />
+                <button id="send-query">Send</button>
+            </div>
+
+            <div class="live-feedback">
+                <h4>Last Rep Analysis</h4>
+                <div class="feedback-card">
+                    <div class="metric">
+                        <span>Quality Score:</span>
+                        <span class="highlight" id="last-score">--</span>
+                    </div>
+                    <div class="metric">
+                        <span>Detected Mistake:</span>
+                        <span class="mistake-text" id="last-mistake">None</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
