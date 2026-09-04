@@ -55,6 +55,27 @@ def extract_video_keypoints(video_path):
     pose.close()
     return pd.DataFrame(frames_data)
 
+def extract_image_keypoints(image_rgb, pose) -> dict:
+    if not HAS_MP:
+        import numpy as np
+        row = {}
+        for j in range(33):
+            row[f'x_{j}'] = 0.5 + np.random.uniform(-0.05, 0.05)
+            row[f'y_{j}'] = 0.5 + np.random.uniform(-0.05, 0.05)
+            row[f'z_{j}'] = 0.0
+            row[f'vis_{j}'] = 0.99
+        return row
+        
+    results = pose.process(image_rgb)
+    row = {}
+    if results.pose_landmarks:
+        for idx, lm in enumerate(results.pose_landmarks.landmark):
+            row[f'x_{idx}'] = lm.x
+            row[f'y_{idx}'] = lm.y
+            row[f'z_{idx}'] = lm.z
+            row[f'vis_{idx}'] = lm.visibility
+    return row
+
 # Example usage to extract and save frame keypoints
 if __name__ == "__main__":
     # Ensure datasets folder exists

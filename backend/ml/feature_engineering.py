@@ -1,5 +1,53 @@
 import numpy as np
 import pandas as pd
+from collections import deque
+
+class KeypointSmoother:
+    def __init__(self, maxlen=5):
+        self.history = deque(maxlen=maxlen)
+        # Highly active joints: elbows (13,14), wrists (15,16), knees (25,26), ankles (27,28)
+        self.smooth_indices = [13, 14, 15, 16, 25, 26, 27, 28]
+
+    def smooth(self, keypoints: dict) -> dict:
+        self.history.append(keypoints.copy())
+        if len(self.history) == 1:
+            return keypoints
+
+        smoothed_kp = keypoints.copy()
+        for i in self.smooth_indices:
+            x_key, y_key = f'x_{i}', f'y_{i}'
+            if x_key in keypoints and y_key in keypoints:
+                smoothed_kp[x_key] = float(np.mean([h[x_key] for h in self.history if x_key in h]))
+                smoothed_kp[y_key] = float(np.mean([h[y_key] for h in self.history if y_key in h]))
+        return smoothed_kp
+
+def calculate_3d_angle(a, b, c):
+    """
+    Calculates the 3D angle between three points (x, y, z).
+    'b' is the vertex.
+    """
+    a, b, c = np.array(a), np.array(b), np.array(c)
+    ba = a - b
+    bc = c - b
+    cosine_angle = np.dot(ba, bc) / (np.linalg.norm(ba) * np.linalg.norm(bc))
+    angle_rad = np.arccos(np.clip(cosine_angle, -1.0, 1.0))
+    return np.degrees(angle_rad)
+
+def format_sequence_3d(df_keypoints: pd.DataFrame) -> np.ndarray:
+    """
+    Converts a flat DataFrame with columns like x_0, y_0, z_0
+    into a (frames, 33, 3) NumPy array.
+    """
+    num_frames = len(df_keypoints)
+    seq = np.zeros((num_frames, 33, 3))
+    for i in range(33):
+        x_col, y_col, z_col = f'x_{i}', f'y_{i}', f'z_{i}'
+        if x_col in df_keypoints.columns and y_col in df_keypoints.columns:
+            seq[:, i, 0] = df_keypoints[x_col].values
+            seq[:, i, 1] = df_keypoints[y_col].values
+            if z_col in df_keypoints.columns:
+                seq[:, i, 2] = df_keypoints[z_col].values
+    return seq
 
 def calculate_angle(a, b, c):
     """Calculates 2D angle (degrees) at joint B given coordinates A, B, C."""

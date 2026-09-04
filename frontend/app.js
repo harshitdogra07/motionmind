@@ -119,6 +119,13 @@ async function setupCamera() {
             audio: false
         });
         webcamElement.srcObject = stream;
+        webcamElement.onloadedmetadata = () => {
+            const canvas = document.getElementById('overlay');
+            if (canvas) {
+                canvas.width = webcamElement.videoWidth;
+                canvas.height = webcamElement.videoHeight;
+            }
+        };
         mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
         mediaRecorder.ondataavailable = (event) => {
             if (event.data.size > 0) recordedChunks.push(event.data);
